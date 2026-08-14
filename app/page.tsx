@@ -236,7 +236,7 @@ export default function Home() {
     <main className={dark ? "app dark" : "app"}>
       <header className="header">
         <div className="brand"><span>B</span><strong>BUILDWISE</strong></div>
-        <p>PC and laptop picks in Philippine pesos</p>
+        <p>Shops: DynaQuest, EasyPC, PCHub, VillMan, PC Corner, PC Express, Gigahertz, Beyond the Box &amp; Lenovo · Updated August 2026</p>
         <button className="theme" onClick={() => setDark((value) => !value)} aria-label="Toggle dark mode" aria-pressed={dark}>{dark ? <Moon size={16} /> : <Sun size={16} />}<span>Dark mode</span><i className={dark ? "on" : ""}><b /></i></button>
       </header>
 

@@ -15,6 +15,8 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /Buildwise/i);
+  assert.match(html, /Shops: DynaQuest/);
+  assert.match(html, /Updated August 2026/);
   assert.doesNotMatch(html, /Build finder/);
   assert.doesNotMatch(html, /id="budget"/);
   assert.doesNotMatch(html, /Adjust budget/);
