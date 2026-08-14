@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   Box, BriefcaseBusiness, Check, CircuitBoard, Clapperboard, Copy, Cpu,
   DraftingCompass, ExternalLink, Fan, Gamepad2, HardDrive, Laptop, MemoryStick,
-  Monitor, ListFilter, Moon, Search, Store, Sun, X, Zap,
+  Menu, Monitor, ListFilter, Moon, PanelRight, Search, Store, Sun, X, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -209,6 +209,8 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [selectedRange, setSelectedRange] = useState("value");
   const [selectedLaptop, setSelectedLaptop] = useState<LaptopPick | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const activeRange = budgetRanges.find((range) => range.id === selectedRange) ?? budgetRanges[1];
   const budget = activeRange.max;
@@ -236,30 +238,36 @@ export default function Home() {
     <main className={dark ? "app dark" : "app"}>
       <header className="header">
         <div className="brand"><span>B</span><strong>BUILDWISE</strong></div>
+        <button className="menu-toggle" onClick={() => { setFiltersOpen((value) => !value); setDetailsOpen(false); }} aria-label={filtersOpen ? "Close filters" : "Open filters"} aria-expanded={filtersOpen}><Menu size={18} /><span>Filters</span></button>
         <p>Shops: DynaQuest, EasyPC, PCHub, VillMan, PC Corner, PC Express, Gigahertz, Beyond the Box &amp; Lenovo · Updated August 2026</p>
-        <button className="theme" onClick={() => setDark((value) => !value)} aria-label="Toggle dark mode" aria-pressed={dark}>{dark ? <Moon size={16} /> : <Sun size={16} />}<span>Dark mode</span><i className={dark ? "on" : ""}><b /></i></button>
+        <div className="header-actions">
+          {device === "laptop" && selectedLaptop && <button className="detail-toggle" onClick={() => { setDetailsOpen((value) => !value); setFiltersOpen(false); }} aria-label={detailsOpen ? "Close laptop details" : "Open laptop details"} aria-expanded={detailsOpen}><PanelRight size={17} /><span>Details</span></button>}
+          <button className="theme" onClick={() => setDark((value) => !value)} aria-label="Toggle dark mode" aria-pressed={dark}>{dark ? <Moon size={16} /> : <Sun size={16} />}<span>Dark mode</span><i className={dark ? "on" : ""}><b /></i></button>
+        </div>
       </header>
 
-      <div className={`layout ${device === "laptop" && selectedLaptop ? "with-detail" : ""}`}>
-        <aside className="sidebar">
+      <div className={`layout ${device === "laptop" && selectedLaptop && detailsOpen ? "with-detail" : ""}`}>
+        {(filtersOpen || (device === "laptop" && selectedLaptop && detailsOpen)) && <button className="panel-scrim" onClick={() => { setFiltersOpen(false); setDetailsOpen(false); }} aria-label="Close open panel" />}
+        <aside className={`sidebar ${filtersOpen ? "open" : ""}`} aria-label="Build filters">
+          <div className="sidebar-mobile-head"><span>Build filters</span><button onClick={() => setFiltersOpen(false)} aria-label="Close filters"><X size={17} /></button></div>
           <section className="control ranges-control">
             <div className="range-title"><span><ListFilter size={15} /> Price range</span><small>Choose one</small></div>
             <div className="range-options" role="group" aria-label="Select a price range">
               {budgetRanges.map((range) => {
                 const active = selectedRange === range.id;
-                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => { setSelectedRange(range.id); setSelectedLaptop(null); }}>{active && <Check size={12} />}{range.label}</button>;
+                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => { setSelectedRange(range.id); setSelectedLaptop(null); setDetailsOpen(false); setFiltersOpen(false); }}>{active && <Check size={12} />}{range.label}</button>;
               })}
             </div>
           </section>
 
           <section className="control device-control">
             <label><Monitor size={15} /> Device</label>
-            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => { setDevice("desktop"); setSelectedLaptop(null); }} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
+            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => { setDevice("desktop"); setSelectedLaptop(null); setDetailsOpen(false); setFiltersOpen(false); }} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => { setDevice("laptop"); setFiltersOpen(false); }} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
           </section>
 
           <section className="control grow">
             <label><BriefcaseBusiness size={15} /> Use case</label>
-            <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => { setUseCase(id); setSelectedLaptop(null); }}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
+            <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => { setUseCase(id); setSelectedLaptop(null); setDetailsOpen(false); setFiltersOpen(false); }}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
           </section>
         </aside>
 
@@ -281,15 +289,15 @@ export default function Home() {
               {shortlist.map((item, index) => {
                 const fits = item.price >= activeRange.min && item.price <= activeRange.max;
                 const selected = selectedLaptop?.name === item.name;
-                return <article key={item.name} className={`${index === 0 ? "best" : ""} ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-label={`View details for ${item.name}`} onClick={() => setSelectedLaptop(item)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedLaptop(item); } }}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><a href={laptopSearchUrl(item)} target="_blank" rel="noreferrer" aria-label={`Search ${item.name} at ${item.shop}`} onClick={(event) => event.stopPropagation()}><Search size={12} /> {item.shop}</a></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
+                return <article key={item.name} className={`${index === 0 ? "best" : ""} ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-label={`View details for ${item.name}`} onClick={() => { setSelectedLaptop(item); setDetailsOpen(true); setFiltersOpen(false); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedLaptop(item); setDetailsOpen(true); setFiltersOpen(false); } }}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><a href={laptopSearchUrl(item)} target="_blank" rel="noreferrer" aria-label={`Search ${item.name} at ${item.shop}`} onClick={(event) => event.stopPropagation()}><Search size={12} /> {item.shop}</a></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
               })}
             </div>
           )}
         </section>
 
-        {device === "laptop" && selectedLaptop && (
+        {device === "laptop" && selectedLaptop && detailsOpen && (
           <aside className="detail-sidebar" aria-label={`${selectedLaptop.name} details`}>
-            <div className="detail-head"><span>Laptop details</span><button onClick={() => setSelectedLaptop(null)} aria-label="Close laptop details"><X size={17} /></button></div>
+            <div className="detail-head"><span>Laptop details</span><button onClick={() => setDetailsOpen(false)} aria-label="Close laptop details"><X size={17} /></button></div>
             <div className="laptop-visual"><Laptop size={68} strokeWidth={1.25} /><span>{useCase === "architecture" ? "CAD + 3D ready" : purposes.find((purpose) => purpose.id === useCase)?.note}</span></div>
             <section className="detail-name"><small>Selected laptop</small><h2>{selectedLaptop.name}</h2><strong>{peso.format(selectedLaptop.price)}</strong></section>
             <section className="detail-specs"><small>Specifications</small><ul>{laptopSpecRows(selectedLaptop).map(({ label, value, icon: Icon }) => <li key={`${label}-${value}`}><i><Icon size={16} strokeWidth={1.7} /></i><span><small>{label}</small><b>{value}</b></span></li>)}</ul></section>

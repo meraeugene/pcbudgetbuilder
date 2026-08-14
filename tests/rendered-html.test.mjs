@@ -22,6 +22,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.doesNotMatch(html, /Adjust budget/);
   assert.match(html, /Desktop/);
   assert.match(html, /Laptop/);
+  assert.match(html, /Open filters/);
   assert.match(html, /Price range/);
   assert.match(html, /Choose one/);
   assert.match(html, /₱250–400K/);
@@ -47,10 +48,17 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(source, /const curated = inRanges/);
   assert.match(source, /\.\.\.curated, \.\.\.supplemental/);
   assert.match(source, /Lenovo LOQ 15/);
+  assert.match(source, /filtersOpen/);
+  assert.match(source, /detailsOpen/);
+  assert.match(source, /panel-scrim/);
+  assert.match(source, /PanelRight/);
 
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.match(css, /min-width:801px.*max-width:1100px/s);
   assert.match(css, /min-width:561px.*max-width:800px/s);
   assert.match(css, /max-width:560px/s);
   assert.match(css, /max-height:600px/s);
+  assert.match(css, /\.sidebar\.open/);
+  assert.match(css, /\.menu-toggle/);
+  assert.match(css, /\.detail-toggle/);
 });
