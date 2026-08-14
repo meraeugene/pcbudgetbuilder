@@ -14,7 +14,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /Buildwise/i);
-  assert.match(html, /Build finder/);
+  assert.doesNotMatch(html, /Build finder/);
   assert.match(html, /Budget/);
   assert.match(html, /Desktop/);
   assert.match(html, /Laptop/);

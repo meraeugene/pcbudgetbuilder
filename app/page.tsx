@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   Box, BriefcaseBusiness, Check, CircuitBoard, Clapperboard, Copy, Cpu,
   DraftingCompass, Fan, Gamepad2, HardDrive, Laptop, MemoryStick, Monitor,
-  ListFilter, Moon, PhilippinePeso, SlidersHorizontal, Store, Sun, Zap,
+  ListFilter, Moon, PhilippinePeso, Store, Sun, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -171,8 +171,6 @@ export default function Home() {
 
       <div className="layout">
         <aside className="sidebar">
-          <div className="intro"><SlidersHorizontal size={19} /><div><h1>Build finder</h1><p>Set your budget and use case.</p></div></div>
-
           <section className="control">
             <label htmlFor="budget"><PhilippinePeso size={15} /> Budget</label>
             <div className="budget"><span>₱</span><input id="budget" type="number" min="30000" max="250000" step="1000" value={budget} onChange={(event) => setBudget(Math.max(30000, Math.min(250000, Number(event.target.value) || 30000)))} /></div>
