@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import {
   Box, BriefcaseBusiness, Check, CircuitBoard, Clapperboard, Copy, Cpu,
-  DraftingCompass, Fan, Gamepad2, HardDrive, Laptop, MemoryStick, Monitor,
-  ListFilter, Moon, Store, Sun, Zap,
+  DraftingCompass, ExternalLink, Fan, Gamepad2, HardDrive, Laptop, MemoryStick,
+  Monitor, ListFilter, Moon, Search, Store, Sun, X, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -29,6 +29,18 @@ const shopUrls: Record<string, string> = {
   "Lenovo Store": "https://www.lenovo.com/ph/en/",
 };
 
+function laptopSearchUrl(item: LaptopPick) {
+  const query = encodeURIComponent(item.name);
+  const searches: Record<string, string> = {
+    "PC Express": `https://pcx.com.ph/search?q=${query}`,
+    "VillMan": `https://villman.com/search?q=${query}`,
+    "Gigahertz": `https://www.gigahertz.com.ph/search?q=${query}`,
+    "Beyond the Box": `https://beyondthebox.ph/search?q=${query}`,
+    "Lenovo Store": `https://www.lenovo.com/ph/en/search?text=${query}`,
+  };
+  return searches[item.shop] ?? `${shopUrls[item.shop]}search?q=${query}`;
+}
+
 const purposes: { id: UseCase; label: string; note: string; icon: LucideIcon }[] = [
   { id: "gaming", label: "Gaming", note: "High FPS", icon: Gamepad2 },
   { id: "architecture", label: "Architecture", note: "CAD + 3D", icon: DraftingCompass },
@@ -42,6 +54,7 @@ const budgetRanges = [
   { id: "mid", label: "₱80–120K", min: 80000, max: 120000 },
   { id: "high", label: "₱120–180K", min: 120000, max: 180000 },
   { id: "premium", label: "₱180–250K", min: 180000, max: 250000 },
+  { id: "ultra", label: "₱250–400K", min: 250000, max: 400000 },
 ];
 
 const starter = [
@@ -91,6 +104,12 @@ const builds: Record<UseCase, Build[]> = {
   ],
 };
 
+const ultraLaptops: LaptopPick[] = [
+  { name: "ASUS ROG Strix 16", specs: "Core Ultra 9 · RTX 5080 · 32GB · 2TB · 16-inch 240Hz", shop: "PC Express", price: 259995 },
+  { name: "Lenovo Legion Pro 7", specs: "Core Ultra 9 · RTX 5080 · 64GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 275995 },
+  { name: "ASUS ROG Strix 18", specs: "Core Ultra 9 · RTX 5090 · 64GB · 2TB · 18-inch 240Hz", shop: "PC Express", price: 363995 },
+];
+
 const laptops: Record<UseCase, LaptopPick[]> = {
   gaming: [
     { name: "Acer Nitro V 15", specs: "Core i5 · RTX 4050 · 16GB · 512GB", shop: "PC Express", price: 55999 },
@@ -99,6 +118,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "MSI Crosshair A16 HX", specs: "Ryzen 7 · RTX 5070 · 16GB · 512GB", shop: "PC Express", price: 99995 },
     { name: "ASUS Gaming V16", specs: "Core 7 · RTX 5070 · 16GB · 512GB", shop: "PC Express", price: 104995 },
     { name: "ROG Strix G16", specs: "Ultra 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 174995 },
+    ...ultraLaptops,
   ],
   architecture: [
     { name: "ASUS Vivobook Pro 15", specs: "Ryzen 7 · RTX 4050 · 16GB · 1TB OLED", shop: "VillMan", price: 65995 },
@@ -107,6 +127,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "HP Omen 16", specs: "Ryzen AI 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 116990 },
     { name: "Lenovo Legion 5", specs: "Ryzen AI 7 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 123995 },
     { name: "ROG Zephyrus G14", specs: "Ryzen AI 9 · RTX 5070 · 32GB · 1TB OLED", shop: "PC Express", price: 179995 },
+    ...ultraLaptops,
   ],
   editing: [
     { name: "ASUS Vivobook Pro 15", specs: "Ryzen 7 · RTX 4050 · 16GB · 1TB OLED", shop: "VillMan", price: 65995 },
@@ -115,6 +136,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "HP Omen 16", specs: "Ryzen AI 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 116990 },
     { name: "Lenovo Legion 5", specs: "Ryzen AI 7 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 123995 },
     { name: "ROG Zephyrus G14", specs: "Ryzen AI 9 · RTX 5070 · 32GB · 1TB OLED", shop: "PC Express", price: 179995 },
+    ...ultraLaptops,
   ],
   work: [
     { name: "Lenovo IdeaPad Slim 3", specs: "Ryzen 5 · 16GB · 512GB", shop: "Gigahertz", price: 34995 },
@@ -123,6 +145,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "ASUS Zenbook 14 OLED", specs: "Core Ultra 5 · 16GB · 1TB", shop: "VillMan", price: 64995 },
     { name: "MacBook Air 13 M4", specs: "Apple M4 · 16GB · 512GB", shop: "Beyond the Box", price: 74990 },
     { name: "Lenovo ThinkPad X1 Carbon", specs: "Core Ultra 7 · 32GB · 1TB", shop: "Lenovo Store", price: 119995 },
+    ...ultraLaptops,
   ],
 };
 
@@ -138,6 +161,7 @@ export default function Home() {
   const [dark, setDark] = useState(true);
   const [copied, setCopied] = useState(false);
   const [selectedRange, setSelectedRange] = useState("value");
+  const [selectedLaptop, setSelectedLaptop] = useState<LaptopPick | null>(null);
 
   const activeRange = budgetRanges.find((range) => range.id === selectedRange) ?? budgetRanges[1];
   const budget = activeRange.max;
@@ -174,26 +198,26 @@ export default function Home() {
         <button className="theme" onClick={() => setDark((value) => !value)} aria-label="Toggle dark mode" aria-pressed={dark}>{dark ? <Moon size={16} /> : <Sun size={16} />}<span>Dark mode</span><i className={dark ? "on" : ""}><b /></i></button>
       </header>
 
-      <div className="layout">
+      <div className={`layout ${device === "laptop" && selectedLaptop ? "with-detail" : ""}`}>
         <aside className="sidebar">
           <section className="control ranges-control">
             <div className="range-title"><span><ListFilter size={15} /> Price range</span><small>Choose one</small></div>
             <div className="range-options" role="group" aria-label="Select a price range">
               {budgetRanges.map((range) => {
                 const active = selectedRange === range.id;
-                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => setSelectedRange(range.id)}>{active && <Check size={12} />}{range.label}</button>;
+                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => { setSelectedRange(range.id); setSelectedLaptop(null); }}>{active && <Check size={12} />}{range.label}</button>;
               })}
             </div>
           </section>
 
           <section className="control device-control">
             <label><Monitor size={15} /> Device</label>
-            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => setDevice("desktop")} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
+            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => { setDevice("desktop"); setSelectedLaptop(null); }} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
           </section>
 
           <section className="control grow">
             <label><BriefcaseBusiness size={15} /> Use case</label>
-            <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => setUseCase(id)}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
+            <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => { setUseCase(id); setSelectedLaptop(null); }}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
           </section>
         </aside>
 
@@ -214,11 +238,22 @@ export default function Home() {
             <div className="laptop-list" key={`${useCase}-${budget}`}>
               {shortlist.map((item, index) => {
                 const fits = item.price >= activeRange.min && item.price <= activeRange.max;
-                return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><a href={shopUrls[item.shop]} target="_blank" rel="noreferrer" aria-label={`Open ${item.shop} store`}><Store size={12} /> {item.shop}</a></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
+                const selected = selectedLaptop?.name === item.name;
+                return <article key={item.name} className={`${index === 0 ? "best" : ""} ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-label={`View details for ${item.name}`} onClick={() => setSelectedLaptop(item)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedLaptop(item); } }}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><a href={laptopSearchUrl(item)} target="_blank" rel="noreferrer" aria-label={`Search ${item.name} at ${item.shop}`} onClick={(event) => event.stopPropagation()}><Search size={12} /> {item.shop}</a></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
               })}
             </div>
           )}
         </section>
+
+        {device === "laptop" && selectedLaptop && (
+          <aside className="detail-sidebar" aria-label={`${selectedLaptop.name} details`}>
+            <div className="detail-head"><span>Laptop details</span><button onClick={() => setSelectedLaptop(null)} aria-label="Close laptop details"><X size={17} /></button></div>
+            <div className="laptop-visual"><Laptop size={68} strokeWidth={1.25} /><span>{useCase === "architecture" ? "CAD + 3D ready" : purposes.find((purpose) => purpose.id === useCase)?.note}</span></div>
+            <section className="detail-name"><small>Selected laptop</small><h2>{selectedLaptop.name}</h2><strong>{peso.format(selectedLaptop.price)}</strong></section>
+            <section className="detail-specs"><small>Specifications</small><ul>{selectedLaptop.specs.split(" · ").map((spec) => <li key={spec}><Check size={13} />{spec}</li>)}</ul></section>
+            <a className="detail-shop" href={laptopSearchUrl(selectedLaptop)} target="_blank" rel="noreferrer"><Search size={15} /><span>Search at {selectedLaptop.shop}</span><ExternalLink size={14} /></a>
+          </aside>
+        )}
       </div>
     </main>
   );

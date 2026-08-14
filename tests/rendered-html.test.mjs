@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -21,6 +22,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(html, /Laptop/);
   assert.match(html, /Price range/);
   assert.match(html, /Choose one/);
+  assert.match(html, /₱250–400K/);
   assert.match(html, /Open DynaQuest store/);
   assert.doesNotMatch(html, /UPDATED LIVE/);
   assert.doesNotMatch(html, /Shortlist updates with every change/);
@@ -28,4 +30,8 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.doesNotMatch(html, /Indicative cash prices/);
   assert.match(html, /laptop shortlist/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
+
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /detail-sidebar/);
+  assert.match(source, /Search .* at/);
 });
