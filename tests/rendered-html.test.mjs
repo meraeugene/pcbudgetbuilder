@@ -37,4 +37,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(source, /label: "CPU"/);
   assert.match(source, /label: "RAM"/);
   assert.match(source, /label: "GPU"/);
+  assert.match(source, /NVIDIA GeForce/);
+  assert.match(source, /AMD \$\{value\}/);
+  assert.match(source, /Intel \$\{value\}/);
 });

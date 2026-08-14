@@ -44,14 +44,32 @@ function laptopSearchUrl(item: LaptopPick) {
 function laptopSpecRows(item: LaptopPick) {
   let memoryFound = false;
   return item.specs.split(" · ").map((value) => {
-    if (/RTX|GeForce|Radeon/i.test(value)) return { label: "GPU", value, icon: CircuitBoard };
+    if (/RTX|GeForce|Radeon/i.test(value)) {
+      const brandedGpu = /^NVIDIA|^AMD/i.test(value)
+        ? value
+        : /Radeon/i.test(value)
+          ? `AMD ${value}`
+          : /GeForce/i.test(value)
+            ? `NVIDIA ${value}`
+            : `NVIDIA GeForce ${value}`;
+      return { label: "GPU", value: brandedGpu, icon: CircuitBoard };
+    }
     if (/^(8|16|24|32|64|128)GB\b/i.test(value) && !memoryFound) {
       memoryFound = true;
       return { label: "RAM", value, icon: MemoryStick };
     }
     if (/\b(256GB|512GB|1TB|2TB|4TB)\b/i.test(value)) return { label: "Storage", value, icon: HardDrive };
     if (/inch|OLED|Hz/i.test(value)) return { label: "Display", value, icon: Monitor };
-    return { label: "CPU", value, icon: Cpu };
+    const brandedCpu = /^Intel|^AMD|^Apple/i.test(value)
+      ? value
+      : /^Ryzen/i.test(value)
+        ? `AMD ${value}`
+        : /^(Core|Ultra)/i.test(value)
+          ? `Intel ${value}`
+          : /^M\d/i.test(value)
+            ? `Apple ${value}`
+            : value;
+    return { label: "CPU", value: brandedCpu, icon: Cpu };
   });
 }
 
