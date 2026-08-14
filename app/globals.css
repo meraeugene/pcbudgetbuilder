@@ -65,7 +65,6 @@ button { cursor:pointer; }
 .laptop-list { padding-top:16px; display:flex; flex-direction:column; gap:10px; }
 .laptop-list>article { flex:1; min-height:96px; max-height:126px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--panel); display:grid; grid-template-columns:92px minmax(0,1fr) auto; align-items:center; gap:16px; cursor:pointer; outline:none; }
 .laptop-list>article.selected { border-color:var(--ink); }
-.laptop-list>article.selected { box-shadow:inset 3px 0 0 var(--ink); }
 .laptop-list>article:focus-visible { box-shadow:0 0 0 2px var(--ink); }
 .laptop-mark { height:100%; border-right:1px solid var(--line); display:flex; flex-direction:column; justify-content:center; gap:8px; color:var(--muted); }
 .laptop-mark span { font-size:10px; }.best .laptop-mark { color:var(--ink); }

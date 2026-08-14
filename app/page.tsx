@@ -136,7 +136,22 @@ const builds: Record<UseCase, Build[]> = {
   ],
 };
 
-const ultraLaptops: LaptopPick[] = [
+const rangeLaptopCatalog: LaptopPick[] = [
+  { name: "Lenovo IdeaPad Slim 3 15IRU8", specs: "Core i3-1315U · 8GB · 512GB · 15.6-inch FHD", shop: "PC Express", price: 34995 },
+  { name: "Acer Nitro V ANV15-51", specs: "Core i5-13420H · RTX 2050 · 8GB · 512GB · 15.6-inch 144Hz", shop: "PC Express", price: 42299 },
+  { name: "Acer Aspire 3 A315-59", specs: "Core i7-1255U · 16GB · 512GB · 15.6-inch FHD", shop: "PC Express", price: 47999 },
+  { name: "Gigabyte Gaming A16 RTX 4050", specs: "Core i5 · RTX 4050 · 16GB · 512GB · 16-inch 165Hz", shop: "PC Express", price: 59995 },
+  { name: "ASUS TUF Gaming F16", specs: "Core 5 · RTX 4050 · 16GB · 512GB · 16-inch 144Hz", shop: "PC Express", price: 73995 },
+  { name: "Gigabyte Gaming A16 RTX 5050", specs: "Ryzen 7 · RTX 5050 · 16GB · 1TB · 16-inch 165Hz", shop: "PC Express", price: 79995 },
+  { name: "ASUS Zenbook 14 UM3406", specs: "Ryzen 7 · 16GB · 1TB · 14-inch OLED", shop: "PC Express", price: 82995 },
+  { name: "MSI Katana 15 HX", specs: "Core i7 · RTX 5070 · 16GB · 1TB · 15.6-inch 165Hz", shop: "PC Express", price: 97995 },
+  { name: "MSI Crosshair A16 HX RTX 5070", specs: "Ryzen 7 · RTX 5070 · 16GB · 512GB · 16-inch 165Hz", shop: "PC Express", price: 99995 },
+  { name: "MSI Vector 16 HX AI", specs: "Core Ultra 9-275HX · RTX 5080 · 16GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 158995 },
+  { name: "Dell Alienware 16 Aurora", specs: "Core 9 · RTX 5070 · 32GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 159990 },
+  { name: "ASUS ROG Flow Z13", specs: "Ryzen AI MAX · 32GB · 1TB · 13-inch 180Hz", shop: "PC Express", price: 174995 },
+  { name: "ASUS ROG Strix G16 RTX 5080", specs: "Core Ultra 9-275HX · RTX 5080 · 32GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 219995 },
+  { name: "HP Omen Max 16", specs: "Core Ultra 9-275HX · RTX 5080 · 32GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 229990 },
+  { name: "Acer Predator Helios 18", specs: "Core Ultra 9-275HX · RTX 5080 · 32GB · 2TB · 18-inch 250Hz", shop: "PC Express", price: 239999 },
   { name: "ASUS ROG Strix 16", specs: "Core Ultra 9 · RTX 5080 · 32GB · 2TB · 16-inch 240Hz", shop: "PC Express", price: 259995 },
   { name: "Lenovo Legion Pro 7", specs: "Core Ultra 9 · RTX 5080 · 64GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 275995 },
   { name: "ASUS ROG Strix 18", specs: "Core Ultra 9 · RTX 5090 · 64GB · 2TB · 18-inch 240Hz", shop: "PC Express", price: 363995 },
@@ -150,7 +165,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "MSI Crosshair A16 HX", specs: "Ryzen 7 · RTX 5070 · 16GB · 512GB", shop: "PC Express", price: 99995 },
     { name: "ASUS Gaming V16", specs: "Core 7 · RTX 5070 · 16GB · 512GB", shop: "PC Express", price: 104995 },
     { name: "ROG Strix G16", specs: "Ultra 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 174995 },
-    ...ultraLaptops,
+    ...rangeLaptopCatalog,
   ],
   architecture: [
     { name: "ASUS Vivobook Pro 15", specs: "Ryzen 7 · RTX 4050 · 16GB · 1TB OLED", shop: "VillMan", price: 65995 },
@@ -159,7 +174,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "HP Omen 16", specs: "Ryzen AI 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 116990 },
     { name: "Lenovo Legion 5", specs: "Ryzen AI 7 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 123995 },
     { name: "ROG Zephyrus G14", specs: "Ryzen AI 9 · RTX 5070 · 32GB · 1TB OLED", shop: "PC Express", price: 179995 },
-    ...ultraLaptops,
+    ...rangeLaptopCatalog,
   ],
   editing: [
     { name: "ASUS Vivobook Pro 15", specs: "Ryzen 7 · RTX 4050 · 16GB · 1TB OLED", shop: "VillMan", price: 65995 },
@@ -168,7 +183,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "HP Omen 16", specs: "Ryzen AI 9 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 116990 },
     { name: "Lenovo Legion 5", specs: "Ryzen AI 7 · RTX 5070 · 16GB · 1TB", shop: "PC Express", price: 123995 },
     { name: "ROG Zephyrus G14", specs: "Ryzen AI 9 · RTX 5070 · 32GB · 1TB OLED", shop: "PC Express", price: 179995 },
-    ...ultraLaptops,
+    ...rangeLaptopCatalog,
   ],
   work: [
     { name: "Lenovo IdeaPad Slim 3", specs: "Ryzen 5 · 16GB · 512GB", shop: "Gigahertz", price: 34995 },
@@ -177,7 +192,7 @@ const laptops: Record<UseCase, LaptopPick[]> = {
     { name: "ASUS Zenbook 14 OLED", specs: "Core Ultra 5 · 16GB · 1TB", shop: "VillMan", price: 64995 },
     { name: "MacBook Air 13 M4", specs: "Apple M4 · 16GB · 512GB", shop: "Beyond the Box", price: 74990 },
     { name: "Lenovo ThinkPad X1 Carbon", specs: "Core Ultra 7 · 32GB · 1TB", shop: "Lenovo Store", price: 119995 },
-    ...ultraLaptops,
+    ...rangeLaptopCatalog,
   ],
 };
 
@@ -199,17 +214,12 @@ export default function Home() {
   const budget = activeRange.max;
   const selectedBuild = useMemo(() => [...builds[useCase]].reverse().find((item) => totalOf(item) <= budget) ?? builds[useCase][0], [budget, useCase]);
   const shortlist = useMemo(() => {
-    const inRanges = laptops[useCase].filter((item) => item.price >= activeRange.min && item.price <= activeRange.max);
+    const uniqueOptions = laptops[useCase].filter((item, index, options) => options.findIndex((candidate) => candidate.name === item.name && candidate.price === item.price) === index);
+    const inRanges = uniqueOptions.filter((item) => item.price >= activeRange.min && item.price <= activeRange.max);
     const ranked = [...inRanges].sort((a, b) => {
-    const aOver = a.price > budget ? 1 : 0;
-    const bOver = b.price > budget ? 1 : 0;
-    if (aOver !== bOver) return aOver - bOver;
-    return Math.abs(budget - a.price) - Math.abs(budget - b.price);
+      return Math.abs(budget - a.price) - Math.abs(budget - b.price);
     });
-    const fillers = laptops[useCase]
-      .filter((item) => !ranked.some((rankedItem) => rankedItem.name === item.name))
-      .sort((a, b) => Math.abs(budget - a.price) - Math.abs(budget - b.price));
-    return [...ranked, ...fillers].slice(0, 3);
+    return ranked.slice(0, 3);
   }, [activeRange, budget, useCase]);
   const buildTotal = totalOf(selectedBuild);
 

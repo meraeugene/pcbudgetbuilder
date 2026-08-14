@@ -40,4 +40,6 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(source, /NVIDIA GeForce/);
   assert.match(source, /AMD \$\{value\}/);
   assert.match(source, /Intel \$\{value\}/);
+  assert.doesNotMatch(source, /const fillers/);
+  assert.match(source, /item\.price >= activeRange\.min && item\.price <= activeRange\.max/);
 });
