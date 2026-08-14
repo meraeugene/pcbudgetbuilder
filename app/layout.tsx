@@ -8,10 +8,10 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL("https://buildwise-ph.andrewvillaloncodex.chatgpt.site"),
   title: "Buildwise — Your Budget, Better Built",
-  description: "Live PC build and laptop picks for gaming, architecture, content creation, work, and study—matched to your Philippine peso budget.",
+  description: "Get a compatible PC build or a three-model laptop shortlist for gaming, architecture, content creation, work, and study—matched to your Philippine peso budget.",
   openGraph: {
     title: "Buildwise — Your Budget, Better Built",
-    description: "Current PC and laptop picks in Philippine pesos.",
+    description: "Set a peso budget. Get a current PC build or laptop shortlist.",
     images: [{ url: "/og.png", width: 1733, height: 907, alt: "Buildwise PC and laptop budget picker" }],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
