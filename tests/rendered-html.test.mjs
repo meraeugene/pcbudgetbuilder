@@ -15,11 +15,12 @@ test("server-renders the Buildwise recommendation experience", async () => {
   const html = await response.text();
   assert.match(html, /Buildwise/i);
   assert.doesNotMatch(html, /Build finder/);
-  assert.match(html, /Budget/);
+  assert.doesNotMatch(html, /id="budget"/);
+  assert.doesNotMatch(html, /Adjust budget/);
   assert.match(html, /Desktop/);
   assert.match(html, /Laptop/);
   assert.match(html, /Price ranges/);
-  assert.match(html, /Multi-select/);
+  assert.match(html, /Select one or more/);
   assert.match(html, /UPDATED LIVE/);
   assert.match(html, /laptop shortlist/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);

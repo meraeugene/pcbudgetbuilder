@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   Box, BriefcaseBusiness, Check, CircuitBoard, Clapperboard, Copy, Cpu,
   DraftingCompass, Fan, Gamepad2, HardDrive, Laptop, MemoryStick, Monitor,
-  ListFilter, Moon, PhilippinePeso, Store, Sun, Zap,
+  ListFilter, Moon, Store, Sun, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -122,19 +122,17 @@ function PartIcon({ category }: { category: string }) {
 }
 
 export default function Home() {
-  const [budget, setBudget] = useState(75000);
   const [device, setDevice] = useState<Device>("desktop");
   const [useCase, setUseCase] = useState<UseCase>("architecture");
   const [dark, setDark] = useState(true);
   const [copied, setCopied] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState<string[]>(["value"]);
 
+  const activeRanges = useMemo(() => budgetRanges.filter((range) => selectedRanges.includes(range.id)), [selectedRanges]);
+  const budget = activeRanges.length ? Math.max(...activeRanges.map((range) => range.max)) : budgetRanges[1].max;
   const selectedBuild = useMemo(() => [...builds[useCase]].reverse().find((item) => totalOf(item) <= budget) ?? builds[useCase][0], [budget, useCase]);
   const shortlist = useMemo(() => {
-    const activeRanges = budgetRanges.filter((range) => selectedRanges.includes(range.id));
-    const inRanges = activeRanges.length
-      ? laptops[useCase].filter((item) => activeRanges.some((range) => item.price >= range.min && item.price <= range.max))
-      : laptops[useCase];
+    const inRanges = laptops[useCase].filter((item) => activeRanges.some((range) => item.price >= range.min && item.price <= range.max));
     const ranked = [...inRanges].sort((a, b) => {
     const aOver = a.price > budget ? 1 : 0;
     const bOver = b.price > budget ? 1 : 0;
@@ -145,17 +143,19 @@ export default function Home() {
       .filter((item) => !ranked.some((rankedItem) => rankedItem.name === item.name))
       .sort((a, b) => Math.abs(budget - a.price) - Math.abs(budget - b.price));
     return [...ranked, ...fillers].slice(0, 3);
-  }, [budget, selectedRanges, useCase]);
+  }, [activeRanges, budget, useCase]);
   const buildTotal = totalOf(selectedBuild);
 
   const toggleRange = (id: string) => {
-    setSelectedRanges((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+    setSelectedRanges((current) => current.includes(id)
+      ? current.length === 1 ? current : current.filter((item) => item !== id)
+      : [...current, id]);
   };
 
   const copyResults = async () => {
     const text = device === "desktop"
       ? `${selectedBuild.label} - ${peso.format(buildTotal)}\n${selectedBuild.parts.map((item) => `${item.category}: ${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`
-      : `Laptop shortlist for ${peso.format(budget)}\n${shortlist.map((item) => `${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`;
+      : `Laptop shortlist for ${activeRanges.map((range) => range.label).join(", ")}\n${shortlist.map((item) => `${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`;
     await navigator.clipboard.writeText(text);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
@@ -171,12 +171,8 @@ export default function Home() {
 
       <div className="layout">
         <aside className="sidebar">
-          <section className="control">
-            <label htmlFor="budget"><PhilippinePeso size={15} /> Budget</label>
-            <div className="budget"><span>₱</span><input id="budget" type="number" min="30000" max="250000" step="1000" value={budget} onChange={(event) => setBudget(Math.max(30000, Math.min(250000, Number(event.target.value) || 30000)))} /></div>
-            <input className="slider" type="range" min="30000" max="250000" step="1000" value={budget} onChange={(event) => setBudget(Number(event.target.value))} aria-label="Adjust budget" />
-            <div className="limits"><span>₱30K</span><span>₱250K</span></div>
-            <div className="range-title"><span><ListFilter size={14} /> Price ranges</span><small>Multi-select · laptop filter</small></div>
+          <section className="control ranges-control">
+            <div className="range-title"><span><ListFilter size={15} /> Price ranges</span><small>Select one or more</small></div>
             <div className="range-options" role="group" aria-label="Select one or more laptop price ranges">
               {budgetRanges.map((range) => {
                 const active = selectedRanges.includes(range.id);
@@ -185,23 +181,19 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="control">
-            <label><Monitor size={15} /> Device</label>
-            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => setDevice("desktop")}><Monitor size={17} /> Desktop</button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")}><Laptop size={17} /> Laptop</button></div>
-          </section>
-
           <section className="control grow">
             <label><BriefcaseBusiness size={15} /> Use case</label>
             <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => setUseCase(id)}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
           </section>
-
-          <div className="shops"><Store size={14} /><span>Compared across DynaQuest, PC Hub, EasyPC, and VillMan</span></div>
         </aside>
 
         <section className="results" aria-live="polite">
           <div className="results-head">
             <div><span className="live"><i /> UPDATED LIVE</span><h2>{device === "desktop" ? selectedBuild.label : "Laptop shortlist"}</h2><p>{device === "desktop" ? selectedBuild.note : selectedRanges.length ? `Three options from ${selectedRanges.length} selected price ${selectedRanges.length === 1 ? "range" : "ranges"}.` : `Three options closest to your ${peso.format(budget)} budget.`}</p></div>
-            <button onClick={copyResults}><Copy size={15} />{copied ? "Copied" : "Copy"}</button>
+            <div className="results-actions">
+              <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => setDevice("desktop")} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
+              <button className="copy-button" onClick={copyResults}><Copy size={15} /><span>{copied ? "Copied" : "Copy"}</span></button>
+            </div>
           </div>
 
           {device === "desktop" ? (
@@ -212,8 +204,8 @@ export default function Home() {
           ) : (
             <div className="laptop-list" key={`${useCase}-${budget}`}>
               {shortlist.map((item, index) => {
-                const fits = item.price <= budget;
-                return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><span><Store size={12} /> {item.shop}</span></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "Within budget" : `+${peso.format(item.price - budget)}`}</span></div></article>;
+                const fits = activeRanges.some((range) => item.price >= range.min && item.price <= range.max);
+                return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><span><Store size={12} /> {item.shop}</span></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
               })}
               <div className="list-note"><Check size={15} /><span><b>Shortlist updates with every change</b><small>Models are ranked by budget fit and your selected use case.</small></span></div>
             </div>
