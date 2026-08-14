@@ -181,6 +181,11 @@ export default function Home() {
             </div>
           </section>
 
+          <section className="control device-control">
+            <label><Monitor size={15} /> Device</label>
+            <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => setDevice("desktop")} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
+          </section>
+
           <section className="control grow">
             <label><BriefcaseBusiness size={15} /> Use case</label>
             <div className="uses">{purposes.map(({ id, label, note, icon: Icon }) => <button key={id} className={useCase === id ? "active" : ""} onClick={() => setUseCase(id)}><Icon size={17} /><span><b>{label}</b><small>{note}</small></span>{useCase === id && <Check size={14} />}</button>)}</div>
@@ -189,9 +194,8 @@ export default function Home() {
 
         <section className="results" aria-live="polite">
           <div className="results-head">
-            <div><span className="live"><i /> UPDATED LIVE</span><h2>{device === "desktop" ? selectedBuild.label : "Laptop shortlist"}</h2><p>{device === "desktop" ? selectedBuild.note : selectedRanges.length ? `Three options from ${selectedRanges.length} selected price ${selectedRanges.length === 1 ? "range" : "ranges"}.` : `Three options closest to your ${peso.format(budget)} budget.`}</p></div>
+            <div><h2>{device === "desktop" ? selectedBuild.label : "Laptop shortlist"}</h2>{device === "desktop" && <p>{selectedBuild.note}</p>}</div>
             <div className="results-actions">
-              <div className="device" role="group" aria-label="Device type"><button className={device === "desktop" ? "active" : ""} onClick={() => setDevice("desktop")} aria-label="Show desktop build"><Monitor size={17} /><span>Desktop</span></button><button className={device === "laptop" ? "active" : ""} onClick={() => setDevice("laptop")} aria-label="Show laptop shortlist"><Laptop size={17} /><span>Laptop</span></button></div>
               <button className="copy-button" onClick={copyResults}><Copy size={15} /><span>{copied ? "Copied" : "Copy"}</span></button>
             </div>
           </div>
@@ -207,11 +211,10 @@ export default function Home() {
                 const fits = activeRanges.some((range) => item.price >= range.min && item.price <= range.max);
                 return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><span><Store size={12} /> {item.shop}</span></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
               })}
-              <div className="list-note"><Check size={15} /><span><b>Shortlist updates with every change</b><small>Models are ranked by budget fit and your selected use case.</small></span></div>
             </div>
           )}
 
-          <footer><span>Indicative cash prices · Confirm stock before checkout</span><span>Refreshed August 2026</span></footer>
+          <footer><span>Indicative cash prices · Confirm stock before checkout</span></footer>
         </section>
       </div>
     </main>

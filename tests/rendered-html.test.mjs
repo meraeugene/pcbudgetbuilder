@@ -21,7 +21,9 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(html, /Laptop/);
   assert.match(html, /Price ranges/);
   assert.match(html, /Select one or more/);
-  assert.match(html, /UPDATED LIVE/);
+  assert.doesNotMatch(html, /UPDATED LIVE/);
+  assert.doesNotMatch(html, /Shortlist updates with every change/);
+  assert.doesNotMatch(html, /Refreshed August 2026/);
   assert.match(html, /laptop shortlist/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
