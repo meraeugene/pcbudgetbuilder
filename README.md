@@ -1,6 +1,6 @@
 # Buildwise
 
-A simple one-screen Philippine PC and laptop budget builder. Set a budget from ₱30,000 to ₱250,000, choose a use case, and get either a compatible desktop build or a three-model laptop shortlist using current indicative local prices.
+A simple one-screen Philippine PC and laptop budget builder. Set an exact budget from ₱30,000 to ₱250,000 or multi-select several price ranges, choose a use case, and get either a compatible desktop build or a three-model laptop shortlist using current indicative local prices.
 
 ## Run locally
 

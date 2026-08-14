@@ -18,6 +18,8 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(html, /Budget/);
   assert.match(html, /Desktop/);
   assert.match(html, /Laptop/);
+  assert.match(html, /Price ranges/);
+  assert.match(html, /Multi-select/);
   assert.match(html, /UPDATED LIVE/);
   assert.match(html, /laptop shortlist/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);

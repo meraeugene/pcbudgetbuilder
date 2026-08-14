@@ -8,7 +8,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL("https://buildwise-ph.andrewvillaloncodex.chatgpt.site"),
   title: "Buildwise — Your Budget, Better Built",
-  description: "Get a compatible PC build or a three-model laptop shortlist for gaming, architecture, content creation, work, and study—matched to your Philippine peso budget.",
+  description: "Set an exact peso budget or multiple price ranges, then get a compatible PC build or a three-model laptop shortlist for your use case.",
   openGraph: {
     title: "Buildwise — Your Budget, Better Built",
     description: "Set a peso budget. Get a current PC build or laptop shortlist.",

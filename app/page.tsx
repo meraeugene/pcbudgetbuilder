@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   Box, BriefcaseBusiness, Check, CircuitBoard, Clapperboard, Copy, Cpu,
   DraftingCompass, Fan, Gamepad2, HardDrive, Laptop, MemoryStick, Monitor,
-  Moon, PhilippinePeso, SlidersHorizontal, Store, Sun, Zap,
+  ListFilter, Moon, PhilippinePeso, SlidersHorizontal, Store, Sun, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -23,6 +23,14 @@ const purposes: { id: UseCase; label: string; note: string; icon: LucideIcon }[]
   { id: "architecture", label: "Architecture", note: "CAD + 3D", icon: DraftingCompass },
   { id: "editing", label: "Content", note: "Edit + render", icon: Clapperboard },
   { id: "work", label: "Work & study", note: "Everyday", icon: BriefcaseBusiness },
+];
+
+const budgetRanges = [
+  { id: "entry", label: "₱30–50K", min: 30000, max: 50000 },
+  { id: "value", label: "₱50–80K", min: 50000, max: 80000 },
+  { id: "mid", label: "₱80–120K", min: 80000, max: 120000 },
+  { id: "high", label: "₱120–180K", min: 120000, max: 180000 },
+  { id: "premium", label: "₱180–250K", min: 180000, max: 250000 },
 ];
 
 const starter = [
@@ -119,15 +127,30 @@ export default function Home() {
   const [useCase, setUseCase] = useState<UseCase>("architecture");
   const [dark, setDark] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [selectedRanges, setSelectedRanges] = useState<string[]>(["value"]);
 
   const selectedBuild = useMemo(() => [...builds[useCase]].reverse().find((item) => totalOf(item) <= budget) ?? builds[useCase][0], [budget, useCase]);
-  const shortlist = useMemo(() => [...laptops[useCase]].sort((a, b) => {
+  const shortlist = useMemo(() => {
+    const activeRanges = budgetRanges.filter((range) => selectedRanges.includes(range.id));
+    const inRanges = activeRanges.length
+      ? laptops[useCase].filter((item) => activeRanges.some((range) => item.price >= range.min && item.price <= range.max))
+      : laptops[useCase];
+    const ranked = [...inRanges].sort((a, b) => {
     const aOver = a.price > budget ? 1 : 0;
     const bOver = b.price > budget ? 1 : 0;
     if (aOver !== bOver) return aOver - bOver;
     return Math.abs(budget - a.price) - Math.abs(budget - b.price);
-  }).slice(0, 3), [budget, useCase]);
+    });
+    const fillers = laptops[useCase]
+      .filter((item) => !ranked.some((rankedItem) => rankedItem.name === item.name))
+      .sort((a, b) => Math.abs(budget - a.price) - Math.abs(budget - b.price));
+    return [...ranked, ...fillers].slice(0, 3);
+  }, [budget, selectedRanges, useCase]);
   const buildTotal = totalOf(selectedBuild);
+
+  const toggleRange = (id: string) => {
+    setSelectedRanges((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  };
 
   const copyResults = async () => {
     const text = device === "desktop"
@@ -155,6 +178,13 @@ export default function Home() {
             <div className="budget"><span>₱</span><input id="budget" type="number" min="30000" max="250000" step="1000" value={budget} onChange={(event) => setBudget(Math.max(30000, Math.min(250000, Number(event.target.value) || 30000)))} /></div>
             <input className="slider" type="range" min="30000" max="250000" step="1000" value={budget} onChange={(event) => setBudget(Number(event.target.value))} aria-label="Adjust budget" />
             <div className="limits"><span>₱30K</span><span>₱250K</span></div>
+            <div className="range-title"><span><ListFilter size={14} /> Price ranges</span><small>Multi-select · laptop filter</small></div>
+            <div className="range-options" role="group" aria-label="Select one or more laptop price ranges">
+              {budgetRanges.map((range) => {
+                const active = selectedRanges.includes(range.id);
+                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => toggleRange(range.id)}>{active && <Check size={12} />}{range.label}</button>;
+              })}
+            </div>
           </section>
 
           <section className="control">
@@ -172,7 +202,7 @@ export default function Home() {
 
         <section className="results" aria-live="polite">
           <div className="results-head">
-            <div><span className="live"><i /> UPDATED LIVE</span><h2>{device === "desktop" ? selectedBuild.label : "Laptop shortlist"}</h2><p>{device === "desktop" ? selectedBuild.note : `Three options closest to your ${peso.format(budget)} budget.`}</p></div>
+            <div><span className="live"><i /> UPDATED LIVE</span><h2>{device === "desktop" ? selectedBuild.label : "Laptop shortlist"}</h2><p>{device === "desktop" ? selectedBuild.note : selectedRanges.length ? `Three options from ${selectedRanges.length} selected price ${selectedRanges.length === 1 ? "range" : "ranges"}.` : `Three options closest to your ${peso.format(budget)} budget.`}</p></div>
             <button onClick={copyResults}><Copy size={15} />{copied ? "Copied" : "Copy"}</button>
           </div>
 
