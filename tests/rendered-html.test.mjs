@@ -44,4 +44,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(source, /Intel \$\{value\}/);
   assert.doesNotMatch(source, /const fillers/);
   assert.match(source, /item\.price >= activeRange\.min && item\.price <= activeRange\.max/);
+  assert.match(source, /const curated = inRanges/);
+  assert.match(source, /\.\.\.curated, \.\.\.supplemental/);
+  assert.match(source, /Lenovo LOQ 15/);
 });

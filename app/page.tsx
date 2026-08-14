@@ -12,7 +12,7 @@ type UseCase = "gaming" | "architecture" | "editing" | "work";
 type Device = "desktop" | "laptop";
 type Part = { category: string; name: string; shop: string; price: number };
 type Build = { tier: string; label: string; note: string; parts: Part[] };
-type LaptopPick = { name: string; specs: string; shop: string; price: number };
+type LaptopPick = { name: string; specs: string; shop: string; price: number; supplemental?: boolean };
 
 const part = (category: string, name: string, shop: string, price: number): Part => ({ category, name, shop, price });
 const totalOf = (build: Build) => build.parts.reduce((sum, item) => sum + item.price, 0);
@@ -136,7 +136,7 @@ const builds: Record<UseCase, Build[]> = {
   ],
 };
 
-const rangeLaptopCatalog: LaptopPick[] = [
+const rangeLaptopCatalog: LaptopPick[] = ([
   { name: "Lenovo IdeaPad Slim 3 15IRU8", specs: "Core i3-1315U · 8GB · 512GB · 15.6-inch FHD", shop: "PC Express", price: 34995 },
   { name: "Acer Nitro V ANV15-51", specs: "Core i5-13420H · RTX 2050 · 8GB · 512GB · 15.6-inch 144Hz", shop: "PC Express", price: 42299 },
   { name: "Acer Aspire 3 A315-59", specs: "Core i7-1255U · 16GB · 512GB · 15.6-inch FHD", shop: "PC Express", price: 47999 },
@@ -155,7 +155,7 @@ const rangeLaptopCatalog: LaptopPick[] = [
   { name: "ASUS ROG Strix 16", specs: "Core Ultra 9 · RTX 5080 · 32GB · 2TB · 16-inch 240Hz", shop: "PC Express", price: 259995 },
   { name: "Lenovo Legion Pro 7", specs: "Core Ultra 9 · RTX 5080 · 64GB · 1TB · 16-inch 240Hz", shop: "PC Express", price: 275995 },
   { name: "ASUS ROG Strix 18", specs: "Core Ultra 9 · RTX 5090 · 64GB · 2TB · 18-inch 240Hz", shop: "PC Express", price: 363995 },
-];
+] satisfies LaptopPick[]).map((item) => ({ ...item, supplemental: true }));
 
 const laptops: Record<UseCase, LaptopPick[]> = {
   gaming: [
@@ -216,10 +216,10 @@ export default function Home() {
   const shortlist = useMemo(() => {
     const uniqueOptions = laptops[useCase].filter((item, index, options) => options.findIndex((candidate) => candidate.name === item.name && candidate.price === item.price) === index);
     const inRanges = uniqueOptions.filter((item) => item.price >= activeRange.min && item.price <= activeRange.max);
-    const ranked = [...inRanges].sort((a, b) => {
-      return Math.abs(budget - a.price) - Math.abs(budget - b.price);
-    });
-    return ranked.slice(0, 3);
+    const byBudgetFit = (a: LaptopPick, b: LaptopPick) => Math.abs(budget - a.price) - Math.abs(budget - b.price);
+    const curated = inRanges.filter((item) => !item.supplemental).sort(byBudgetFit);
+    const supplemental = inRanges.filter((item) => item.supplemental).sort(byBudgetFit);
+    return [...curated, ...supplemental].slice(0, 3);
   }, [activeRange, budget, useCase]);
   const buildTotal = totalOf(selectedBuild);
 
