@@ -65,4 +65,8 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(css, /perspective:1200px/);
   assert.match(css, /@keyframes card-in/);
   assert.match(css, /rotateX/);
+  assert.match(css, /overflow-y:auto/);
+  assert.match(css, /-webkit-overflow-scrolling:touch/);
+  assert.match(css, /env\(safe-area-inset-bottom\)/);
+  assert.doesNotMatch(css, /article:nth-child\(n\+7\)\s*\{\s*display:none/);
 });
