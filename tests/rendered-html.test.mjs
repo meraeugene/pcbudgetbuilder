@@ -34,4 +34,7 @@ test("server-renders the Buildwise recommendation experience", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(source, /detail-sidebar/);
   assert.match(source, /Search .* at/);
+  assert.match(source, /label: "CPU"/);
+  assert.match(source, /label: "RAM"/);
+  assert.match(source, /label: "GPU"/);
 });

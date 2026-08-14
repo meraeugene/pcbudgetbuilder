@@ -41,6 +41,20 @@ function laptopSearchUrl(item: LaptopPick) {
   return searches[item.shop] ?? `${shopUrls[item.shop]}search?q=${query}`;
 }
 
+function laptopSpecRows(item: LaptopPick) {
+  let memoryFound = false;
+  return item.specs.split(" · ").map((value) => {
+    if (/RTX|GeForce|Radeon/i.test(value)) return { label: "GPU", value, icon: CircuitBoard };
+    if (/^(8|16|24|32|64|128)GB\b/i.test(value) && !memoryFound) {
+      memoryFound = true;
+      return { label: "RAM", value, icon: MemoryStick };
+    }
+    if (/\b(256GB|512GB|1TB|2TB|4TB)\b/i.test(value)) return { label: "Storage", value, icon: HardDrive };
+    if (/inch|OLED|Hz/i.test(value)) return { label: "Display", value, icon: Monitor };
+    return { label: "CPU", value, icon: Cpu };
+  });
+}
+
 const purposes: { id: UseCase; label: string; note: string; icon: LucideIcon }[] = [
   { id: "gaming", label: "Gaming", note: "High FPS", icon: Gamepad2 },
   { id: "architecture", label: "Architecture", note: "CAD + 3D", icon: DraftingCompass },
@@ -250,7 +264,7 @@ export default function Home() {
             <div className="detail-head"><span>Laptop details</span><button onClick={() => setSelectedLaptop(null)} aria-label="Close laptop details"><X size={17} /></button></div>
             <div className="laptop-visual"><Laptop size={68} strokeWidth={1.25} /><span>{useCase === "architecture" ? "CAD + 3D ready" : purposes.find((purpose) => purpose.id === useCase)?.note}</span></div>
             <section className="detail-name"><small>Selected laptop</small><h2>{selectedLaptop.name}</h2><strong>{peso.format(selectedLaptop.price)}</strong></section>
-            <section className="detail-specs"><small>Specifications</small><ul>{selectedLaptop.specs.split(" · ").map((spec) => <li key={spec}><Check size={13} />{spec}</li>)}</ul></section>
+            <section className="detail-specs"><small>Specifications</small><ul>{laptopSpecRows(selectedLaptop).map(({ label, value, icon: Icon }) => <li key={`${label}-${value}`}><i><Icon size={16} strokeWidth={1.7} /></i><span><small>{label}</small><b>{value}</b></span></li>)}</ul></section>
             <a className="detail-shop" href={laptopSearchUrl(selectedLaptop)} target="_blank" rel="noreferrer"><Search size={15} /><span>Search at {selectedLaptop.shop}</span><ExternalLink size={14} /></a>
           </aside>
         )}
