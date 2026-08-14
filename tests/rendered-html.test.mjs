@@ -61,4 +61,8 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(css, /\.sidebar\.open/);
   assert.match(css, /\.menu-toggle/);
   assert.match(css, /\.detail-toggle/);
+  assert.match(css, /--card-shadow/);
+  assert.match(css, /perspective:1200px/);
+  assert.match(css, /@keyframes card-in/);
+  assert.match(css, /rotateX/);
 });
