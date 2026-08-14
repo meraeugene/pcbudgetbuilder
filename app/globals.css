@@ -103,4 +103,64 @@ button { cursor:pointer; }
 @media (max-width:560px) {
   .header { padding-inline:10px; }.theme span { display:none; }.layout,.layout.with-detail { grid-template-columns:43% 57%; }.sidebar { padding:10px; }.range-title { align-items:flex-start; }.range-title small,.uses small { display:none; }.range-options { grid-template-columns:1fr; }.range-options button:last-child:nth-child(odd) { grid-column:auto; }.results { padding:12px 8px; }.results-head h2 { font-size:19px; }.results-head p { display:none; }.results-actions { gap:5px; }.device button { padding:0 7px; }.device button span,.copy-button span { display:none; }.copy-button { justify-content:center; padding:0; }.build-summary>div:first-child { display:none; }.build-summary strong { font-size:15px; }.parts article { grid-template-columns:28px minmax(0,1fr); }.parts article>i { width:27px; height:27px; }.parts article>strong { grid-column:2; }.laptop-list>article { grid-template-columns:1fr; padding:8px; }.laptop-mark { display:none; }.laptop-price { grid-column:1; }.laptop-copy p { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }.detail-sidebar { width:57%; padding:12px; }.detail-name h2 { font-size:17px; }.laptop-visual { min-height:90px; }.laptop-visual svg { width:48px; height:48px; }.detail-shop { padding:0 9px; }.detail-shop span { font-size:9px; }
 }
+
+@media (min-width:801px) and (max-width:1100px) {
+  .header { padding-inline:18px; grid-template-columns:1fr auto; }
+  .header>p { display:none; }
+  .layout,.layout.with-detail { grid-template-columns:300px minmax(0,1fr); }
+  .sidebar { padding:18px; gap:13px; }
+  .results { padding:20px 22px 14px; }
+  .parts article { padding-inline:10px; }
+  .laptop-list>article { grid-template-columns:70px minmax(0,1fr) auto; gap:12px; }
+  .detail-sidebar { width:300px; }
+}
+
+@media (min-width:561px) and (max-width:800px) {
+  .layout,.layout.with-detail { grid-template-columns:230px minmax(0,1fr); }
+  .sidebar { padding:13px; gap:10px; }
+  .control { padding-top:9px; }
+  .range-options { gap:6px; }
+  .range-options button { min-height:37px; font-size:9px; }
+  .uses { gap:6px; }
+  .uses button { min-height:42px; padding-inline:9px; }
+  .results { padding:14px 12px 10px; }
+  .results-head { min-height:58px; padding-bottom:10px; }
+  .results-head h2 { font-size:22px; }
+  .parts { gap:5px; }
+  .parts article { min-height:48px; padding:7px 8px; }
+  .laptop-list { gap:7px; }
+  .laptop-list>article { max-height:none; min-height:0; grid-template-columns:48px minmax(0,1fr); gap:9px; }
+  .laptop-copy h3 { font-size:15px; }
+  .detail-sidebar { width:min(300px,calc(100% - 230px)); }
+}
+
+@media (max-width:560px) {
+  .header { height:52px; }
+  .brand { gap:7px; }.brand>span { width:28px; height:28px; }.brand strong { font-size:11px; }
+  .theme { height:36px; padding-inline:8px; }.theme i { display:none; }
+  .layout,.layout.with-detail { height:calc(100dvh - 52px); grid-template-columns:42% 58%; }
+  .sidebar { padding:8px; gap:8px; }
+  .control { padding-top:8px; }
+  .control>label { margin-bottom:6px; font-size:9px; }
+  .range-title { margin-bottom:6px; }.range-title>span { font-size:9px; }
+  .range-options { grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+  .range-options button { min-height:32px; padding-inline:3px; border-radius:6px; font-size:8px; }
+  .range-options button:last-child:nth-child(odd) { grid-column:auto; }
+  .device { gap:4px; }.device button { height:32px; padding:0; }
+  .uses { gap:4px; }.uses button { min-height:34px; padding-inline:7px; gap:6px; border-radius:7px; }.uses button b { font-size:10px; }
+  .results { padding:8px 6px 6px; }
+  .results-head { min-height:50px; gap:6px; padding-bottom:8px; }.results-head h2 { font-size:17px; }.copy-button { width:34px; height:34px; }
+  .build-summary { height:43px; }.build-summary>div:last-child { gap:4px; }.build-summary strong { font-size:14px; }.build-summary>div:last-child span { padding:3px 4px; font-size:8px; }
+  .parts { gap:4px; }.parts article { min-height:42px; padding:5px 6px; gap:6px; }.parts h3 { font-size:10px; }.parts article>div>a,.parts small { font-size:8px; }.parts article>strong { font-size:9px; }
+  .laptop-list { padding-top:7px; gap:5px; }.laptop-list>article { max-height:none; min-height:0; padding:7px; }.laptop-copy h3 { margin-bottom:3px; font-size:13px; }.laptop-copy p { margin-bottom:5px; font-size:9px; }.laptop-copy>a { font-size:8px; }.laptop-price { gap:4px; }.laptop-price strong { font-size:14px; }.laptop-price>span { height:20px; padding-inline:5px; font-size:8px; }
+  .detail-sidebar { width:58%; padding:8px; gap:6px; }.detail-head { font-size:9px; }.detail-head button { width:30px; height:30px; }.laptop-visual { display:none; }.detail-name,.detail-specs { padding-top:6px; }.detail-name h2 { margin:4px 0 6px; font-size:15px; }.detail-name strong { font-size:14px; }.detail-specs ul { margin-top:6px; gap:3px; }.detail-specs li { min-height:32px; padding:3px 5px; gap:6px; }.detail-specs li>i { width:24px; height:24px; }.detail-specs li b { font-size:9px; }.detail-specs li small { font-size:7px; }.detail-shop { min-height:36px; padding-inline:7px; }
+}
+
+@media (max-height:600px) {
+  .header { height:48px; }.layout,.layout.with-detail { height:calc(100dvh - 48px); }
+  .sidebar { padding-block:7px; gap:6px; }.control { padding-top:6px; }.range-title { margin-bottom:5px; }.range-options button { min-height:28px; }.device button { height:29px; }.uses button { min-height:30px; }
+  .results { padding-block:7px 5px; }.results-head { min-height:45px; }.build-summary { height:38px; }.parts article { min-height:38px; }
+  .laptop-list { padding-top:5px; gap:4px; }.laptop-list>article { min-height:0; padding-block:5px; }
+  .detail-sidebar { padding-block:7px; gap:5px; }.detail-name,.detail-specs { padding-top:5px; }.detail-specs li { min-height:29px; }.detail-shop { min-height:33px; }
+}
 @media (prefers-reduced-motion:reduce) { * { animation:none!important; transition:none!important; } }

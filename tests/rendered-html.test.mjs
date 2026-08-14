@@ -47,4 +47,10 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(source, /const curated = inRanges/);
   assert.match(source, /\.\.\.curated, \.\.\.supplemental/);
   assert.match(source, /Lenovo LOQ 15/);
+
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(css, /min-width:801px.*max-width:1100px/s);
+  assert.match(css, /min-width:561px.*max-width:800px/s);
+  assert.match(css, /max-width:560px/s);
+  assert.match(css, /max-height:600px/s);
 });
