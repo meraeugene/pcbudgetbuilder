@@ -14,9 +14,10 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /Buildwise/i);
-  assert.match(html, /Spend smarter/);
-  assert.match(html, /Set your budget/);
+  assert.match(html, /happy setup/);
+  assert.match(html, /Your budget/);
   assert.match(html, /Build a PC/);
   assert.match(html, /Find a laptop/);
+  assert.match(html, /LIVE MATCH/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });

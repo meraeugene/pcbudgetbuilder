@@ -6,8 +6,15 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Buildwise — Smart PC Builds in Philippine Pesos",
-  description: "Get a tailored PC build or laptop recommendation for gaming, architecture, content creation, work, and study—matched to your peso budget.",
+  metadataBase: new URL("https://buildwise-ph.andrewvillaloncodex.chatgpt.site"),
+  title: "Buildwise — Your Budget, Better Built",
+  description: "Live PC build and laptop picks for gaming, architecture, content creation, work, and study—matched to your Philippine peso budget.",
+  openGraph: {
+    title: "Buildwise — Your Budget, Better Built",
+    description: "Current PC and laptop picks in Philippine pesos.",
+    images: [{ url: "/og.png", width: 1733, height: 907, alt: "Buildwise PC and laptop budget picker" }],
+  },
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
