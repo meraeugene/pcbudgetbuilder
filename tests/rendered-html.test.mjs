@@ -19,11 +19,13 @@ test("server-renders the Buildwise recommendation experience", async () => {
   assert.doesNotMatch(html, /Adjust budget/);
   assert.match(html, /Desktop/);
   assert.match(html, /Laptop/);
-  assert.match(html, /Price ranges/);
-  assert.match(html, /Select one or more/);
+  assert.match(html, /Price range/);
+  assert.match(html, /Choose one/);
+  assert.match(html, /Open DynaQuest store/);
   assert.doesNotMatch(html, /UPDATED LIVE/);
   assert.doesNotMatch(html, /Shortlist updates with every change/);
   assert.doesNotMatch(html, /Refreshed August 2026/);
+  assert.doesNotMatch(html, /Indicative cash prices/);
   assert.match(html, /laptop shortlist/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });

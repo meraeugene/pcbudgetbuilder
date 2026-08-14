@@ -17,6 +17,17 @@ type LaptopPick = { name: string; specs: string; shop: string; price: number };
 const part = (category: string, name: string, shop: string, price: number): Part => ({ category, name, shop, price });
 const totalOf = (build: Build) => build.parts.reduce((sum, item) => sum + item.price, 0);
 const peso = new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP", maximumFractionDigits: 0 });
+const shopUrls: Record<string, string> = {
+  "DynaQuest": "https://dynaquestpc.com/",
+  "EasyPC": "https://easypc.com.ph/",
+  "PCHub": "https://pchubonline.com/",
+  "VillMan": "https://villman.com/",
+  "PC Corner": "https://pccorner.com.ph/",
+  "PC Express": "https://pcx.com.ph/",
+  "Gigahertz": "https://www.gigahertz.com.ph/",
+  "Beyond the Box": "https://beyondthebox.ph/",
+  "Lenovo Store": "https://www.lenovo.com/ph/en/",
+};
 
 const purposes: { id: UseCase; label: string; note: string; icon: LucideIcon }[] = [
   { id: "gaming", label: "Gaming", note: "High FPS", icon: Gamepad2 },
@@ -126,13 +137,13 @@ export default function Home() {
   const [useCase, setUseCase] = useState<UseCase>("architecture");
   const [dark, setDark] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [selectedRanges, setSelectedRanges] = useState<string[]>(["value"]);
+  const [selectedRange, setSelectedRange] = useState("value");
 
-  const activeRanges = useMemo(() => budgetRanges.filter((range) => selectedRanges.includes(range.id)), [selectedRanges]);
-  const budget = activeRanges.length ? Math.max(...activeRanges.map((range) => range.max)) : budgetRanges[1].max;
+  const activeRange = budgetRanges.find((range) => range.id === selectedRange) ?? budgetRanges[1];
+  const budget = activeRange.max;
   const selectedBuild = useMemo(() => [...builds[useCase]].reverse().find((item) => totalOf(item) <= budget) ?? builds[useCase][0], [budget, useCase]);
   const shortlist = useMemo(() => {
-    const inRanges = laptops[useCase].filter((item) => activeRanges.some((range) => item.price >= range.min && item.price <= range.max));
+    const inRanges = laptops[useCase].filter((item) => item.price >= activeRange.min && item.price <= activeRange.max);
     const ranked = [...inRanges].sort((a, b) => {
     const aOver = a.price > budget ? 1 : 0;
     const bOver = b.price > budget ? 1 : 0;
@@ -143,19 +154,13 @@ export default function Home() {
       .filter((item) => !ranked.some((rankedItem) => rankedItem.name === item.name))
       .sort((a, b) => Math.abs(budget - a.price) - Math.abs(budget - b.price));
     return [...ranked, ...fillers].slice(0, 3);
-  }, [activeRanges, budget, useCase]);
+  }, [activeRange, budget, useCase]);
   const buildTotal = totalOf(selectedBuild);
-
-  const toggleRange = (id: string) => {
-    setSelectedRanges((current) => current.includes(id)
-      ? current.length === 1 ? current : current.filter((item) => item !== id)
-      : [...current, id]);
-  };
 
   const copyResults = async () => {
     const text = device === "desktop"
       ? `${selectedBuild.label} - ${peso.format(buildTotal)}\n${selectedBuild.parts.map((item) => `${item.category}: ${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`
-      : `Laptop shortlist for ${activeRanges.map((range) => range.label).join(", ")}\n${shortlist.map((item) => `${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`;
+      : `Laptop shortlist for ${activeRange.label}\n${shortlist.map((item) => `${item.name} - ${peso.format(item.price)} at ${item.shop}`).join("\n")}`;
     await navigator.clipboard.writeText(text);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
@@ -172,11 +177,11 @@ export default function Home() {
       <div className="layout">
         <aside className="sidebar">
           <section className="control ranges-control">
-            <div className="range-title"><span><ListFilter size={15} /> Price ranges</span><small>Select one or more</small></div>
-            <div className="range-options" role="group" aria-label="Select one or more laptop price ranges">
+            <div className="range-title"><span><ListFilter size={15} /> Price range</span><small>Choose one</small></div>
+            <div className="range-options" role="group" aria-label="Select a price range">
               {budgetRanges.map((range) => {
-                const active = selectedRanges.includes(range.id);
-                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => toggleRange(range.id)}>{active && <Check size={12} />}{range.label}</button>;
+                const active = selectedRange === range.id;
+                return <button key={range.id} className={active ? "active" : ""} aria-pressed={active} onClick={() => setSelectedRange(range.id)}>{active && <Check size={12} />}{range.label}</button>;
               })}
             </div>
           </section>
@@ -203,18 +208,16 @@ export default function Home() {
           {device === "desktop" ? (
             <div className="desktop-result" key={`${useCase}-${selectedBuild.label}`}>
               <div className="build-summary"><div><span>{selectedBuild.tier}</span><b>{selectedBuild.parts.length} compatible parts</b></div><div><small>Estimated total</small><strong>{peso.format(buildTotal)}</strong><span>{budget >= buildTotal ? `${peso.format(budget - buildTotal)} left` : `${peso.format(buildTotal - budget)} over`}</span></div></div>
-              <div className="parts">{selectedBuild.parts.map((item) => <article key={`${item.category}-${item.name}`}><i><PartIcon category={item.category} /></i><div><small>{item.category}</small><h3>{item.name}</h3><span><Store size={11} /> {item.shop}</span></div><strong>{peso.format(item.price)}</strong></article>)}</div>
+              <div className="parts">{selectedBuild.parts.map((item) => <article key={`${item.category}-${item.name}`}><i><PartIcon category={item.category} /></i><div><small>{item.category}</small><h3>{item.name}</h3><a href={shopUrls[item.shop]} target="_blank" rel="noreferrer" aria-label={`Open ${item.shop} store`}><Store size={11} /> {item.shop}</a></div><strong>{peso.format(item.price)}</strong></article>)}</div>
             </div>
           ) : (
             <div className="laptop-list" key={`${useCase}-${budget}`}>
               {shortlist.map((item, index) => {
-                const fits = activeRanges.some((range) => item.price >= range.min && item.price <= range.max);
-                return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><span><Store size={12} /> {item.shop}</span></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
+                const fits = item.price >= activeRange.min && item.price <= activeRange.max;
+                return <article key={item.name} className={index === 0 ? "best" : ""}><div className="laptop-mark"><Laptop size={24} /><span>{index === 0 ? "Best match" : `Option ${index + 1}`}</span></div><div className="laptop-copy"><h3>{item.name}</h3><p>{item.specs}</p><a href={shopUrls[item.shop]} target="_blank" rel="noreferrer" aria-label={`Open ${item.shop} store`}><Store size={12} /> {item.shop}</a></div><div className="laptop-price"><strong>{peso.format(item.price)}</strong><span className={fits ? "fits" : "stretch"}>{fits ? <Check size={11} /> : null}{fits ? "In selected range" : "Closest match"}</span></div></article>;
               })}
             </div>
           )}
-
-          <footer><span>Indicative cash prices · Confirm stock before checkout</span></footer>
         </section>
       </div>
     </main>

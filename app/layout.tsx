@@ -8,10 +8,10 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL("https://buildwise-ph.andrewvillaloncodex.chatgpt.site"),
   title: "Buildwise — Your Budget, Better Built",
-  description: "Select one or more peso price ranges, then get a compatible PC build or a three-model laptop shortlist for your use case.",
+  description: "Select a peso price range, then get a compatible PC build or a three-model laptop shortlist for your use case.",
   openGraph: {
     title: "Buildwise — Your Budget, Better Built",
-    description: "Select your price ranges. Get a current PC build or laptop shortlist.",
+    description: "Select a price range. Get a current PC build or laptop shortlist.",
     images: [{ url: "/og.png", width: 1733, height: 907, alt: "Buildwise PC and laptop budget picker" }],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
